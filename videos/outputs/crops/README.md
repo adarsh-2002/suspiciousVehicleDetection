@@ -1,0 +1,1 @@
+# Contains cropped images of vehicles under the name of the video file

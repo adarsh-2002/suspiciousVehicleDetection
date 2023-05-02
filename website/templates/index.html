@@ -1,0 +1,279 @@
+{% extends "base.html" %}{% block title %}Suspicious Vehicle Detection{% endblock %}
+{% block content %}
+<style>
+  body {
+    background: #eee;
+    color: #8A98AC;
+  }
+
+  .product-file-type .img-icon {
+    width: 46px;
+    height: 46px;
+    line-height: 46px;
+    font-weight: 600;
+    border-radius: 50%;
+    font-size: 18px;
+    text-align: center;
+  }
+
+  /* -- Text Color -- */
+  .text-white {
+    color: #ffffff !important;
+  }
+
+  .text-black {
+    color: #282828 !important;
+  }
+
+  .text-muted {
+    color: #8A98AC !important;
+  }
+
+  .text-primary {
+    color: #6e81dc !important;
+  }
+
+  .text-secondary {
+    color: #718093 !important;
+  }
+
+  .text-success {
+    color: #5fc27e !important;
+  }
+
+  .text-danger {
+    color: #f44455 !important;
+  }
+
+  .text-warning {
+    color: #fcc100 !important;
+  }
+
+  .text-info {
+    color: #72d0fb !important;
+  }
+
+  .text-light {
+    color: #dcdde1 !important;
+  }
+
+  .text-dark {
+    color: #2d3646 !important;
+  }
+
+
+  .primary-rgba {
+    background-color: rgba(110, 129, 220, 0.1);
+  }
+
+  .secondary-rgba {
+    background-color: rgba(113, 128, 147, 0.1);
+  }
+
+  .success-rgba {
+    background-color: rgba(95, 194, 126, 0.1);
+  }
+
+  .danger-rgba {
+    background-color: rgba(244, 68, 85, 0.1);
+  }
+
+  .warning-rgba {
+    background-color: rgba(252, 193, 0, 0.1);
+  }
+
+  .info-rgba {
+    background-color: rgba(114, 208, 251, 0.1);
+  }
+
+  .light-rgba {
+    background-color: rgba(220, 221, 225, 0.1);
+  }
+
+  .dark-rgba {
+    background-color: rgba(45, 54, 70, 0.1);
+  }
+
+  .card-header:first-child {
+    border-radius: calc(5px - 1px) calc(5px - 1px) 0 0;
+    padding: 15px 20px;
+  }
+
+  .card-header:first-child {
+    border-radius: calc(.25rem - 1px) calc(.25rem - 1px) 0 0;
+  }
+
+  .card-header {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    background-color: transparent;
+  }
+
+  .card {
+    border: none;
+    border-radius: 3px;
+    background-color: #ffffff;
+  }
+
+  .m-b-30 {
+    margin-bottom: 30px;
+  }
+
+  .h1,
+  .h2,
+  .h3,
+  .h4,
+  .h5,
+  .h6,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-weight: 600;
+    color: #282828;
+  }
+
+  ul {
+    list-style-type: none;
+  }
+  
+  li {
+    display: inline-block;
+  }
+  
+  input[type="checkbox"][id^="cb"] {
+    display: none;
+  }
+  
+  label {
+    border: 1px solid #fff;
+    padding: 10px;
+    display: block;
+    position: relative;
+    margin: 10px;
+    cursor: pointer;
+  }
+  
+  label:before {
+    background-color: white;
+    color: white;
+    content: " ";
+    display: block;
+    border-radius: 50%;
+    border: 1px solid grey;
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    width: 25px;
+    height: 25px;
+    text-align: center;
+    line-height: 28px;
+    transition-duration: 0.4s;
+    transform: scale(0);
+  }
+  
+  label img {
+    height: 100px;
+    width: 100px;
+    transition-duration: 0.2s;
+    transform-origin: 50% 50%;
+  }
+  
+  :checked + label {
+    border-color: #ddd;
+  }
+  
+  :checked + label:before {
+    content: "✓";
+    background-color: grey;
+    transform: scale(1);
+  }
+  
+  :checked + label img {
+    transform: scale(0.9);
+    box-shadow: 0 0 5px #333;
+    z-index: -1;
+  }
+</style>
+<main role="main">
+  <form action="/startFresh" method="post">
+    <input class="btn btn-primary" type="submit" value="Start fresh" />
+  </form>
+  <form action="/addQueryImage" method="post" enctype="multipart/form-data">
+    <!-- input to accept images -->
+    <input type="file" name="queryImage" id="queryImage" accept="image/*">
+    <input class="btn btn-primary" type="submit" value="Add query image" />
+  </form>
+  <form action="/run" method="post">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6">
+
+          <h1 class="fw-light text-center text-lg-start mt-4 mb-0">Query Images</h1>
+
+          <hr class="mt-2 mb-5">
+          {% if queryImage %}
+          <ul>
+            <fieldset>
+          {% for query in queryImage %}
+          
+            <li><input type="checkbox" id="cb{{query}}" name="queryImage" value="{{query}}" />
+              <label for="cb{{query}}"><img src="static/queryImage/{{query}}" /></label>
+            </li>
+          {% endfor %}
+            </fieldset>
+          </ul>
+          {% else %}
+            <h3>No query images available</h3>
+          {% endif %}
+        </div>
+        <div class="col-md-6">
+          <div class="card m-b-30">
+            <div class="card-header">
+              <div class="row align-items-center">
+                <div class="col-8">
+                  <h5 class="card-title mb-0">Video Files</h5>
+                </div>
+                <div class="col-4">
+                  <ul class="list-inline-group text-right mb-1 pl-0">
+                    <li class="list-inline-item mr-0 font-12"><i
+                        class="feather icon-more-vertical- font-20 text-primary"></i></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="product-file-type">
+                {% if videos %}
+                <ul class="list-unstyled">
+                  {% for video in videos %}
+                  <li class="media mb-3">
+                    <input type="radio" name="video" value="{{video}}" required>
+                    <span class="mr-3 align-self-center img-icon primary-rgba text-primary">vid</span>
+                    <div class="media-body">
+                      <h5 class="font-16 mb-1">{{video}}<i
+                          class="feather icon-download-cloud float-right"></i>
+                      </h5>
+                    </div>
+                  </li>
+                  {% endfor %}
+                </ul>
+                {% else %}
+                <h3>No videos available</h3>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+          <div>
+            <label class="card-title" for="plate">License plate</label>
+            <input class="form form-control" type="text" name="plate" id="plate" />
+          </div>
+          <button class="btn btn-primary">Run</button>
+        </div>
+      </div>
+    </div>
+    
+  </form>
+</main>
+{% endblock %}

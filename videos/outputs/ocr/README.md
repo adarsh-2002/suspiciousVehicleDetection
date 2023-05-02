@@ -1,0 +1,1 @@
+# Contains the number plates that were able to be detected from the video
